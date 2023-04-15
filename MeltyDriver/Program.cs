@@ -5,14 +5,12 @@ using System.Text.Json;
 Controller con = new Controller(UserIndex.One);
 SerialPort serialPort = new SerialPort { };
 
-serialPort.PortName = "COM13";
+serialPort.PortName = "COM3";
 serialPort.BaudRate = 115200;
 serialPort.DtrEnable = false;
 serialPort.Open();
 
 serialPort.DataReceived += SerialPort_DataReceived;
-
-
 
 double maxTurn = .75;
 double maxForward = 1.0;

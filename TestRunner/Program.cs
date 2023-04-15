@@ -14,41 +14,65 @@ int deadZone = 20;
 
 //double deg = 180 / Math.PI * foo;
 
+var currentHeading = 0;
+var heading = 0;
+var magnitude = 90;
+
+var modTest = 143 % 360;
+Console.WriteLine(modTest);
+
+//while (true)
+//{
+//    currentHeading += 5;
+
+//    if (Math.Abs(heading + 90 - currentHeading) < magnitude)
+//    {
+//        Console.WriteLine($"Current:{currentHeading}, heading:{heading}");
+//    }
+//    else
+//    {
+//        Console.WriteLine("bar");
+//    }
+
+//    Thread.Sleep(500);
+//}
+
 //Console.WriteLine(deg);
 
 
-while (true)
-{
-    var state = con.GetState();
+//while (true)
+//{
+//    var state = con.GetState();
 
-    int x = (int)GetStickInput(state.Gamepad.RightThumbX);
-    int y = (int)GetStickInput(state.Gamepad.RightThumbY);
+//    int x = (int)GetStickInput(state.Gamepad.RightThumbX);
+//    int y = (int)GetStickInput(state.Gamepad.RightThumbY);
+//    var spinny = Convert.ToInt32(state.Gamepad.LeftTrigger / 2.55);
 
-    // let's calculate the angle that it's going to... probably some right triangle math?
+//    // let's calculate the angle that it's going to... probably some right triangle math?
 
-    var c = Math.Sqrt(y * y + x * x);
-    double foo = Math.Asin(x / c);
-    double deg = 180 / Math.PI * foo;
-    double outdeg = 0;
+//    var c = Math.Sqrt(y * y + x * x);
+//    double foo = Math.Asin(x / c);
+//    double deg = 180 / Math.PI * foo;
+//    double outdeg = 0;
 
-    var magnatiude = Math.Max(Math.Abs(x), Math.Abs(y));
+//    var magnatiude = Math.Max(Math.Abs(x), Math.Abs(y));
 
-    if (!double.IsNaN(deg))
-    { 
-    // figure out what quadrant we're in so we get the correct angle
-        if (x >= 0 && y >= 0)
-            outdeg = deg;
-        else if (x >= 0 && y < 0)
-            outdeg = 180 - Math.Abs(deg);
-        else if (x < 0 && y < 0)
-            outdeg = 180 + Math.Abs(deg);
-        else
-            outdeg = 360 - Math.Abs(deg);
-    }
+//    if (!double.IsNaN(deg))
+//    { 
+//    // figure out what quadrant we're in so we get the correct angle
+//        if (x >= 0 && y >= 0)
+//            outdeg = deg;
+//        else if (x >= 0 && y < 0)
+//            outdeg = 180 - Math.Abs(deg);
+//        else if (x < 0 && y < 0)
+//            outdeg = 180 + Math.Abs(deg);
+//        else
+//            outdeg = 360 - Math.Abs(deg);
+//    }
 
-    Console.WriteLine($"x:{x}, y:{y}, out deg: {outdeg:0}, magnitude: {magnatiude}");
-
-}
+//    //Console.WriteLine($"x:{x}, y:{y}, out deg: {outdeg:0}, magnitude: {magnatiude}");
+//    Console.WriteLine($"spinney: {spinny}");
+//}
 
 int GetStickInput(short value)
 {
