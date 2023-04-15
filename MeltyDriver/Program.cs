@@ -1,13 +1,11 @@
-﻿using SharpDX.Text;
-using SharpDX.XInput;
+﻿using SharpDX.XInput;
 using System.IO.Ports;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 Controller con = new Controller(UserIndex.One);
 SerialPort serialPort = new SerialPort { };
 
-serialPort.PortName = "COM6";
+serialPort.PortName = "COM13";
 serialPort.BaudRate = 115200;
 serialPort.DtrEnable = false;
 serialPort.Open();
@@ -29,8 +27,10 @@ while (true)
 
         int x = (int)(GetStickInput(state.Gamepad.RightThumbX) * maxTurn);
         int y = (int)(GetStickInput(state.Gamepad.LeftThumbY) * maxForward);
-        var spinny = Convert.ToInt32(state.Gamepad.LeftTrigger / 1.416);
+        var spinny = Convert.ToInt32(state.Gamepad.LeftTrigger / 2.55);
         int adjustmentFactor = 0;
+        int magnitude = 0;
+        double heading = 0;
 
         var buttons = state.Gamepad.Buttons;
 
@@ -98,13 +98,35 @@ while (true)
             x = (int)left;
             y = (int)right;
         }
+        else // Calculate degree heading and magnitude
+        {
+            var c = Math.Sqrt(y * y + x * x);
+            double foo = Math.Asin(x / c);
+            double deg = 180 / Math.PI * foo;
+            magnitude = Math.Max(Math.Abs(x), Math.Abs(y));
+
+            if (!double.IsNaN(deg))
+            {
+                // figure out what quadrant we're in so we get the correct angle
+                if (x >= 0 && y >= 0)
+                    heading = deg;
+                else if (x >= 0 && y < 0)
+                    heading = 180 - Math.Abs(deg);
+                else if (x < 0 && y < 0)
+                    heading = 180 + Math.Abs(deg);
+                else
+                    heading = 360 - Math.Abs(deg);
+            }
+        }
 
         var command = new Command
         {
             Spinney = spinny,
             X = (int)x + 90,
             Y = (int)y + 90,
-            AdjustmentFactor = adjustmentFactor
+            AdjustmentFactor = adjustmentFactor,
+            Magnitude = magnitude,
+            Heading = heading
         };
 
         serialPort.Write(JsonSerializer.Serialize(command));
@@ -148,4 +170,6 @@ public class Command
     public int Y { get; set; }
     public int Spinney { get; set; }
     public int AdjustmentFactor { get; set; }
+    public int Magnitude { get; set; }
+    public double Heading { get; set; }
 }
